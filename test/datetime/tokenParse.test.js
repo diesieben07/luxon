@@ -850,6 +850,24 @@ test("DateTime.fromFormat only an offset", () => {
   expect(dt.offset).toBe(60);
 });
 
+test("DateTime.fromFormat: Token Z allows parsing GMT-X offsets", () => {
+  const dt = DateTime.fromFormat("GMT+4", "Z", { setZone: true });
+  expect(dt.isValid).toBe(true);
+  expect(dt.offset).toBe(240);
+});
+
+test("DateTime.fromFormat: Token ZZ allows parsing GMT-X offsets", () => {
+  const dt = DateTime.fromFormat("GMT+4", "ZZ", { setZone: true });
+  expect(dt.isValid).toBe(true);
+  expect(dt.offset).toBe(240);
+});
+
+test("DateTime.fromFormat: Token ZZZ allows parsing GMT-X offsets", () => {
+  const dt = DateTime.fromFormat("GMT+4", "ZZZ", { setZone: true });
+  expect(dt.isValid).toBe(true);
+  expect(dt.offset).toBe(240);
+});
+
 //------
 // .fromFormatExplain
 //-------
