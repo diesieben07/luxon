@@ -72,6 +72,15 @@ function possiblyCachedWeekData(dt) {
   }
   return wd;
 }
+/**
+ * @param {DateTime} dt
+ */
+function possiblyCachedWeekDataOld(dt) {
+  if (dt.weekData === null) {
+    dt.weekData = gregorianToWeek(dt.c);
+  }
+  return dt.weekData;
+}
 
 /**
  * @param {DateTime} dt
@@ -1179,6 +1188,12 @@ export default class DateTime {
    */
   get weekday() {
     return this.isValid ? possiblyCachedWeekData(this).weekday : NaN;
+  }
+  get weekdayOldCache() {
+    return this.isValid ? possiblyCachedWeekDataOld(this).weekday : NaN;
+  }
+  get weekdayNoCache() {
+    return this.isValid ? gregorianToWeek(this).weekday : NaN;
   }
 
   /**

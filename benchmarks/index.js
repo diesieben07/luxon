@@ -4,7 +4,7 @@ import infoSuites from "./info.js";
 const allSuites = [...dateTimeSuites, ...infoSuites];
 
 async function runAllSuites() {
-  for (const runSuite of allSuites) {
+  for (const runSuite of dateTimeSuites) {
     await runSuite();
   }
 }
