@@ -56,6 +56,14 @@ export function hasLocaleWeekInfo() {
   }
 }
 
+export function hasWeakMap() {
+  try {
+    return typeof WeakMap === "function";
+  } catch (e) {
+    return false;
+  }
+}
+
 // OBJECTS AND ARRAYS
 
 export function maybeArray(thing) {

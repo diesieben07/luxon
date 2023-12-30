@@ -19,6 +19,7 @@ import {
   roundTo,
   objToLocalTS,
   padStart,
+  hasWeakMap,
 } from "./impl/util.js";
 import { normalizeZone } from "./impl/zoneUtil.js";
 import diff from "./impl/diff.js";
@@ -39,7 +40,6 @@ import {
   hasInvalidOrdinalData,
   hasInvalidTimeData,
   usesLocalWeekValues,
-  isoWeekdayToLocal,
 } from "./impl/conversions.js";
 import * as Formats from "./impl/formats.js";
 import {
@@ -57,29 +57,32 @@ function unsupportedZone(zone) {
   return new Invalid("unsupported zone", `the zone "${zone.name}" is not supported`);
 }
 
+const weekDataCache = hasWeakMap() ? new WeakMap() : null;
+const localWeekDataCache = hasWeakMap() ? new WeakMap() : null;
+
 // we cache week data on the DT object and this intermediates the cache
 /**
  * @param {DateTime} dt
  */
 function possiblyCachedWeekData(dt) {
-  if (dt.weekData === null) {
-    dt.weekData = gregorianToWeek(dt.c);
+  let wd = weekDataCache?.get(dt);
+  if (!wd) {
+    wd = gregorianToWeek(dt);
+    weekDataCache?.set(dt, wd);
   }
-  return dt.weekData;
+  return wd;
 }
 
 /**
  * @param {DateTime} dt
  */
 function possiblyCachedLocalWeekData(dt) {
-  if (dt.localWeekData === null) {
-    dt.localWeekData = gregorianToWeek(
-      dt.c,
-      dt.loc.getMinDaysInFirstWeek(),
-      dt.loc.getStartOfWeek()
-    );
+  let wd = localWeekDataCache?.get(dt);
+  if (!wd) {
+    wd = gregorianToWeek(dt, dt.loc.getMinDaysInFirstWeek(), dt.loc.getStartOfWeek());
+    localWeekDataCache?.set(dt, wd);
   }
-  return dt.localWeekData;
+  return wd;
 }
 
 // clone really means, "make a new object with these modifications". all "setters" really use this
